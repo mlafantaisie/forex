@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Request, Form, Depends, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from app.services.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
-from app.crud.crud import insert_forex_price
-from app.crud import user_crud
-from app.services import auth
-from app.schemas.users import UserCreate, UserLogin
-from app.services.auth import hash_password
+
+from app.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
+from app.crud import insert_forex_price
+from app import user_crud
+from app import auth
+from app.users import UserCreate, UserLogin
+from app.auth import hash_password
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")

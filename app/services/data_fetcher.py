@@ -2,10 +2,14 @@ import httpx
 from app.core.config import settings
 from decimal import Decimal
 
-# Alpha Vantage base URL
+# --- Alpha Vantage ---
 ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query"
 
 async def fetch_alpha_vantage_price(base: str, quote: str) -> float:
+    """
+    Fetch single forex price from Alpha Vantage.
+    Use cautiously due to strict rate limits (25/day free tier).
+    """
     params = {
         "function": "CURRENCY_EXCHANGE_RATE",
         "from_currency": base,
@@ -18,11 +22,34 @@ async def fetch_alpha_vantage_price(base: str, quote: str) -> float:
         response.raise_for_status()
         data = response.json()
 
-    # Parse result safely
     try:
         rate_info = data["Realtime Currency Exchange Rate"]
         price = Decimal(rate_info["5. Exchange Rate"])
         return float(price)
     except Exception as e:
-        print("Error parsing Alpha Vantage response:", e)
+        print("AlphaVantage parsing error:", e)
         return None
+
+# --- Finnhub ---
+FINNHUB_URL = "https://finnhub.io/api/v1/forex/rates"
+
+async def fetch_finnhub_quotes(base: str = "USD") -> dict:
+    """
+    Fetch multiple forex prices from Finnhub.
+    Much more API-efficient — allows bulk fetching.
+    """
+    params = {
+        "base": base,
+        "token": settings.FINNHUB_API_KEY
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(FINNHUB_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+    try:
+        return data.get("quote", {})
+    except Exception as e:
+        print("Finnhub parsing error:", e)
+        return {}

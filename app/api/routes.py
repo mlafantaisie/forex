@@ -1,22 +1,62 @@
-from fastapi import APIRouter, HTTPException
-from app.services.data_fetcher import fetch_alpha_vantage_price
+from fastapi import APIRouter, Request, Form, Depends
+from fastapi.responses import RedirectResponse
+from fastapi.templating import Jinja2Templates
+from app.services.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
 from app.crud import insert_forex_price
-from app.models.models import ForexPrice
+from app.crud import user_crud
+from app.services import auth
 
 router = APIRouter()
+templates = Jinja2Templates(directory="app/templates")
 
-@router.get("/fetch/{base}/{quote}")
-async def fetch_and_store_price(base: str, quote: str):
+# Dependency to check login
+async def get_current_user(request: Request):
+    token = request.cookies.get("session_token")
+    username = auth.verify_session_token(token)
+    if not username:
+        raise RedirectResponse("/login", status_code=302)
+    return username
+
+# Login page
+@router.get("/login")
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+# Handle login submission
+@router.post("/login")
+async def login_submit(request: Request, username: str = Form(...), password: str = Form(...)):
+    user = await user_crud.get_user_by_username(username)
+    if user and auth.verify_password(password, user.password_hash):
+        response = RedirectResponse("/", status_code=302)
+        token = auth.create_session_token(username)
+        response.set_cookie("session_token", token, httponly=True)
+        return response
+    return RedirectResponse("/login", status_code=302)
+
+# Logout
+@router.post("/logout")
+async def logout():
+    response = RedirectResponse("/login", status_code=302)
+    response.delete_cookie("session_token")
+    return response
+
+# Main dashboard
+@router.get("/")
+async def index(request: Request, user=Depends(get_current_user)):
+    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+
+# Alpha Vantage protected
+@router.post("/fetch_alpha")
+async def fetch_alpha(request: Request, base: str = Form(...), quote: str = Form(...), user=Depends(get_current_user)):
     price = await fetch_alpha_vantage_price(base, quote)
-    
-    if price is None:
-        raise HTTPException(status_code=500, detail="Failed to fetch price from Alpha Vantage")
+    if price:
+        await insert_forex_price(base, quote, price, "AlphaVantage")
+    return RedirectResponse("/", status_code=302)
 
-    await insert_forex_price(base, quote, price, source="AlphaVantage")
-
-    return {
-        "base_currency": base,
-        "quote_currency": quote,
-        "price": price,
-        "status": "saved"
-    }
+# Finnhub protected
+@router.post("/fetch_finnhub")
+async def fetch_finnhub(request: Request, base: str = Form(...), user=Depends(get_current_user)):
+    quotes = await fetch_finnhub_quotes(base)
+    for quote_currency, price in quotes.items():
+        await insert_forex_price(base, quote_currency, price, "Finnhub")
+    return RedirectResponse("/", status_code=302)

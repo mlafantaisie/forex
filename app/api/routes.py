@@ -5,7 +5,7 @@ from app.services.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_q
 from app.crud.crud import insert_forex_price
 from app.crud import user_crud
 from app.services import auth
-from app.schemas.user import UserCreate, UserLogin
+from ..schemas.user import UserCreate, UserLogin
 from app.services.auth import hash_password
 
 router = APIRouter()

@@ -58,8 +58,16 @@ async def logout():
 
 # Main dashboard
 @router.get("/")
-async def index(request: Request, user=Depends(get_current_user)):
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+async def index(request: Request):
+    token = request.cookies.get("session_token")
+    username = auth.verify_session_token(token)
+    
+    if username:
+        # User logged in
+        return templates.TemplateResponse("index.html", {"request": request, "user": username})
+    else:
+        # Not logged in — redirect to login page
+        return RedirectResponse("/login", status_code=302)
 
 @router.post("/admin/sync_tables")
 # user=Depends(get_current_user)

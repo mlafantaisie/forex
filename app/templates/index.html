@@ -5,9 +5,23 @@
     <title>Forex Observer</title>
 </head>
 <body>
-    <h1>Forex Observer</h1>
-    <p>Welcome to your personal forex tracking tool.</p>
-    <p>Use the API to start pulling price data!</p>
-    <p>Example: <code>/fetch/EUR/USD</code></p>
+    <h1>Forex Observer Dashboard</h1>
+    
+    <p>Alpha Vantage Fetch (single pair)</p>
+    <form method="post" action="/fetch_alpha">
+        <input type="text" name="base" placeholder="Base (e.g. EUR)" required>
+        <input type="text" name="quote" placeholder="Quote (e.g. USD)" required>
+        <button type="submit">Fetch AlphaVantage</button>
+    </form>
+
+    <p>Finnhub Fetch (multi pair)</p>
+    <form method="post" action="/fetch_finnhub">
+        <input type="text" name="base" placeholder="Base (e.g. USD)" required>
+        <button type="submit">Fetch Finnhub</button>
+    </form>
+
+    <form method="post" action="/logout">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>

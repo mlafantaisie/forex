@@ -5,9 +5,27 @@ from app.services.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_q
 from app.crud import insert_forex_price
 from app.crud import user_crud
 from app.services import auth
+from app.schemas import user as user_schemas
+from app.services.auth import hash_password
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+
+# Signup page (for initial setup only)
+@router.get("/signup")
+async def signup_page(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request})
+
+# Handle signup form submission
+@router.post("/signup")
+async def signup_submit(request: Request, username: str = Form(...), password: str = Form(...)):
+    existing_user = await user_crud.get_user_by_username(username)
+    if existing_user:
+        return RedirectResponse("/login", status_code=302)
+
+    hashed_pw = hash_password(password)
+    await user_crud.create_user(username, hashed_pw)
+    return RedirectResponse("/login", status_code=302)
 
 # Dependency to check login
 async def get_current_user(request: Request):

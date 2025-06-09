@@ -10,6 +10,13 @@ from app import auth
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
+@app.on_event("startup")
+async def startup_event():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+        print("Tables Updated")
+
+
 @router.get("/signup")
 async def signup_page(request: Request):
     return templates.TemplateResponse("signup.html", {"request": request})

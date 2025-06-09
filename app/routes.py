@@ -6,7 +6,6 @@ from app.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
 from app.crud import insert_forex_price
 from app import user_crud
 from app import auth
-from app.users import UserCreate, UserLogin
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")

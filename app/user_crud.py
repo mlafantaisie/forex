@@ -1,5 +1,5 @@
 from sqlalchemy.future import select
-from app.users import User
+from app.models import User
 from app.database import async_session
 
 async def get_user_by_username(username: str):

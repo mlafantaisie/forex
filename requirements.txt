@@ -8,3 +8,6 @@ python-dotenv
 pydantic
 psycopg2-binary
 httpx
+passlib[bcrypt]
+python-multipart
+itsdangerous

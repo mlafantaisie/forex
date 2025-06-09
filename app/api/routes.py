@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from app.services.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
-from app.crud import insert_forex_price
+from app.crud.crud import insert_forex_price
 from app.crud import user_crud
 from app.services import auth
 from app.schemas import user as user_schemas

@@ -4,8 +4,8 @@ from fastapi.templating import Jinja2Templates
 
 from app.data_fetcher import fetch_alpha_vantage_price, fetch_finnhub_quotes
 from app.crud import insert_forex_price
-import app.user_crud
-import app.auth
+from app import user_crud
+from app import auth
 from app.users import UserCreate, UserLogin
 
 router = APIRouter()

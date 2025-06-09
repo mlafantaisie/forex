@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import routes
-from app.core.database import engine, Base
+
+from app import routes
+from app.database import engine, Base
 
 app = FastAPI(title="Forex Observer")
 

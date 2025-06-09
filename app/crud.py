@@ -1,7 +1,7 @@
 from sqlalchemy.future import select
 from sqlalchemy import desc
-from app.models.models import ForexPrice
-from app.core.database import async_session
+from app.models import ForexPrice
+from app.database import async_session
 
 # Insert new price record
 async def insert_forex_price(base: str, quote: str, price: float, source: str):

@@ -32,7 +32,7 @@ async def get_current_user(request: Request):
     token = request.cookies.get("session_token")
     username = auth.verify_session_token(token)
     if not username:
-        raise RedirectResponse("/login", status_code=302)
+        raise HTTPException(status_code=401, detail="Not authenticated")
     return username
 
 # Login page

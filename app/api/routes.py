@@ -63,6 +63,13 @@ async def logout():
 async def index(request: Request, user=Depends(get_current_user)):
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
 
+@router.post("/admin/sync_tables")
+# user=Depends(get_current_user)
+async def sync_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    return RedirectResponse("/", status_code=302)
+
 # Alpha Vantage protected
 @router.post("/fetch_alpha")
 async def fetch_alpha(request: Request, base: str = Form(...), quote: str = Form(...), user=Depends(get_current_user)):

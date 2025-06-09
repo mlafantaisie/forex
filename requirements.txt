@@ -10,3 +10,4 @@ httpx
 passlib[bcrypt]
 python-multipart
 itsdangerous
+bcrypt

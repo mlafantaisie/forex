@@ -1,5 +1,5 @@
 import httpx
-from app.core.config import settings
+from app.config import settings
 from decimal import Decimal
 
 # --- Alpha Vantage ---

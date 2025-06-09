@@ -1,7 +1,5 @@
 import asyncio
-from app.core.database import engine, Base
-
-metadata = sqlalchemy.MetaData()
+from app.core.database import engine, Base, metadata
 
 async def init():
     async with engine.begin() as conn:

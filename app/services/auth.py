@@ -1,3 +1,4 @@
+import bcrypt
 from passlib.context import CryptContext
 from itsdangerous import URLSafeSerializer
 from app.core.config import settings

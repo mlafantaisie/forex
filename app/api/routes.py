@@ -11,10 +11,15 @@ from app.services.auth import hash_password
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-# Signup page (for initial setup only)
-@router.get("/signup")
-async def signup_page(request: Request):
-    return templates.TemplateResponse("signup.html", {"request": request})
+@router.post("/signup")
+async def signup_submit(request: Request, username: str = Form(...), password: str = Form(...)):
+    existing_user = await user_crud.get_user_by_username(username)
+    if existing_user:
+        return RedirectResponse("/login", status_code=302)
+
+    hashed_pw = hash_password(password)
+    await user_crud.create_user(username, hashed_pw)
+    return RedirectResponse("/login", status_code=302)
 
 # Handle signup form submission
 @router.post("/signup")

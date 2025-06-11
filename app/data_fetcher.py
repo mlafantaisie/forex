@@ -57,7 +57,32 @@ async def fetch_alpha_vantage_price(base: str, quote: str) -> float:
         return None
 
 # --- Finnhub ---
-FINNHUB_URL = "https://finnhub.io/api/v1/forex/rates"
+FINNHUB_RATES_URL = "https://finnhub.io/api/v1/forex/rates"
+FINNHUB_INDICATOR_URL = "https://finnhub.io/api/v1/indicator"
+
+async def fetch_finnhub_rsi(symbol: str, resolution: str = "D", timeperiod: int = 14) -> dict:
+    params = {
+        "symbol": symbol,
+        "resolution": resolution,
+        "indicator": "rsi",
+        "timeperiod": timeperiod,
+        "token": settings.FINNHUB_API_KEY
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(FINNHUB_INDICATOR_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+    try:
+        rsi_values = data.get("rsi", [])
+        timestamps = data.get("t", [])
+        if rsi_values and timestamps:
+            return {"rsi": round(rsi_values[-1], 2), "timestamp": time.strftime('%Y-%m-%d', time.gmtime(timestamps[-1]))}
+    except Exception as e:
+        print("Finnhub RSI parsing error:", e)
+
+    return {}
 
 async def fetch_finnhub_quotes(base: str = "USD") -> dict:
     """
@@ -70,7 +95,7 @@ async def fetch_finnhub_quotes(base: str = "USD") -> dict:
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(FINNHUB_URL, params=params)
+        response = await client.get(FINNHUB_RATES_URL, params=params)
         response.raise_for_status()
         data = response.json()
 

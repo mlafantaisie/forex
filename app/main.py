@@ -5,8 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
-
-from app.data_fetcher import fetch_alpha_vantage_rsi
+from app.utils.data_fetcher import fetch_finnhub_rsi
 
 load_dotenv()
 
@@ -44,14 +43,12 @@ async def dashboard_post(request: Request, ticker: str = Form(...)):
     if "user" not in request.session:
         return RedirectResponse(url="/login")
 
-    rsi_data = await fetch_alpha_vantage_rsi(ticker.upper())
-    latest_date = max(rsi_data.keys(), default=None)
-    latest_rsi = rsi_data[latest_date]["RSI"] if latest_date else "N/A"
+    rsi_data = await fetch_finnhub_rsi(ticker.upper())
 
     stock_data = {
         "ticker": ticker.upper(),
-        "rsi": latest_rsi,
-        "date": latest_date
+        "rsi": rsi_data.get("rsi", "N/A"),
+        "date": rsi_data.get("timestamp", "N/A")
     }
 
     return templates.TemplateResponse("dashboard.html", {"request": request, "stock_data": stock_data})

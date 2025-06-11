@@ -21,6 +21,7 @@ async def fetch_alpha_vantage_rsi(symbol: str, interval: str = "daily", time_per
         data = response.json()
 
     try:
+        print("Alpha Vantage response:", data)
         return data["Technical Analysis: RSI"]
     except Exception as e:
         print("AlphaVantage RSI parsing error:", e)

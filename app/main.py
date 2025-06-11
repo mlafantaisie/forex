@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
-from app.utils.data_fetcher import fetch_finnhub_rsi
+from app.data_fetcher import fetch_finnhub_rsi
 
 load_dotenv()
 

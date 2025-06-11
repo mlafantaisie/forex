@@ -9,6 +9,9 @@
         <input type="text" name="ticker" placeholder="Enter Ticker (e.g., AAPL)" required>
         <button type="submit">Fetch</button>
     </form>
+    {% if stock_data and stock_data.rsi == "N/A" %}
+      <p style="color: red;">Data not available. You may have exceeded API limits.</p>
+    {% endif %}
     {% if stock_data %}
     <div>
         <h2>Stock Data for {{ stock_data.ticker }}</h2>

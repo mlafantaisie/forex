@@ -104,3 +104,20 @@ async def fetch_finnhub_quotes(base: str = "USD") -> dict:
     except Exception as e:
         print("Finnhub parsing error:", e)
         return {}
+
+async def test_finnhub_connection():
+    test_url = "https://finnhub.io/api/v1/quote"
+    params = {
+        "symbol": "AAPL",
+        "token": settings.FINNHUB_API_KEY
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(test_url, params=params)
+            print("Status Code:", response.status_code)
+            print("Response JSON:", response.json())
+        except httpx.HTTPStatusError as e:
+            print("HTTP error:", e)
+        except Exception as e:
+            print("General error:", e)

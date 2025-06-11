@@ -1,31 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Forex Observer</title>
+    <title>StockGPT</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>Forex Observer Dashboard</h1>
-    
-    <p>Alpha Vantage Fetch (single pair)</p>
-    <form method="post" action="/fetch_alpha">
-        <input type="text" name="base" placeholder="Base (e.g. EUR)" required>
-        <input type="text" name="quote" placeholder="Quote (e.g. USD)" required>
-        <button type="submit">Fetch AlphaVantage</button>
-    </form>
-
-    <p>Finnhub Fetch (multi pair)</p>
-    <form method="post" action="/fetch_finnhub">
-        <input type="text" name="base" placeholder="Base (e.g. USD)" required>
-        <button type="submit">Fetch Finnhub</button>
-    </form>
-
-    <form method="post" action="/logout">
-        <button type="submit">Logout</button>
-    </form>
-
-    <form method="post" action="/admin/sync_tables">
-        <button type="submit">Sync Database Tables</button>
-    </form>
+    <h1>Welcome to StockGPT</h1>
+    <a href="/login">Login</a>
 </body>
 </html>

@@ -5,6 +5,28 @@ from decimal import Decimal
 # --- Alpha Vantage ---
 ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query"
 
+async def fetch_alpha_vantage_rsi(symbol: str, interval: str = "daily", time_period: int = 14) -> dict:
+    params = {
+        "function": "RSI",
+        "symbol": symbol,
+        "interval": interval,
+        "time_period": time_period,
+        "series_type": "close",
+        "apikey": settings.ALPHA_VANTAGE_API_KEY
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(ALPHA_VANTAGE_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
+
+    try:
+        return data["Technical Analysis: RSI"]
+    except Exception as e:
+        print("AlphaVantage RSI parsing error:", e)
+        return {}
+
+
 async def fetch_alpha_vantage_price(base: str, quote: str) -> float:
     """
     Fetch single forex price from Alpha Vantage.

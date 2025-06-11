@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Dashboard</title>
@@ -6,6 +5,16 @@
 </head>
 <body>
     <h1>Dashboard</h1>
-    <p>Welcome to your stock dashboard.</p>
+    <form method="post">
+        <input type="text" name="ticker" placeholder="Enter Ticker (e.g., AAPL)" required>
+        <button type="submit">Fetch</button>
+    </form>
+    {% if stock_data %}
+    <div>
+        <h2>Stock Data for {{ stock_data.ticker }}</h2>
+        <p>Date: {{ stock_data.date }}</p>
+        <p>RSI: {{ stock_data.rsi }}</p>
+    </div>
+    {% endif %}
 </body>
 </html>

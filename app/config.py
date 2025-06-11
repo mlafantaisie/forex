@@ -5,9 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql+asyncpg://user:pass@localhost:5432/forex_db")
-
     # Alpha Vantage API Key
     ALPHA_VANTAGE_API_KEY: str = os.getenv("ALPHA_VANTAGE_API_KEY", "")
 

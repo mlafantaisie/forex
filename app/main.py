@@ -17,7 +17,7 @@ templates = Jinja2Templates(directory="app/templates")
 
 @app.get("/test-finnhub")
 async def test_finnhub():
-    await test_finnhub_connection()
+    await data_fetcher.test_finnhub_connection()
     return {"status": "done"}
 
 @app.get("/", response_class=HTMLResponse)
